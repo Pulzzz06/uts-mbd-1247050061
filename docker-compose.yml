@@ -1,0 +1,40 @@
+services:
+  postgres_service:
+    image: postgres:15-alpine
+    container_name: postgres_zacky
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    ports:
+      - "${POSTGRES_PORT}:5432"
+    volumes:
+      - pgdata_zacky:/var/lib/postgresql/data
+    networks:
+      - uts_salam_net
+
+  pgadmin_service:
+    image: dpage/pgadmin4:latest
+    container_name: pgadmin_zacky
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
+    ports:
+      - "${PGADMIN_PORT}:80"
+    depends_on:
+      - postgres_service
+    networks:
+      - uts_salam_net
+
+volumes:
+  pgdata_zacky:
+
+networks:
+  uts_salam_net:
+    driver: bridge
